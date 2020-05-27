@@ -32,7 +32,7 @@ getApi(url)
 
 // Event Listeners
 searchSubmit.addEventListener('click', searchButton);
-searchSpace.addEventListener('keydown', searchInput);
+searchSpace.addEventListener('keyup', searchInput);
 
 
 // Helper Functions:
@@ -74,9 +74,10 @@ function galleryHtml(data) {
 
 // Display Modal of Employee 
 function modalHtml(data, div) {
-    div.addEventListener('click', () => {
+    div.addEventListener('click', (e) => {
         console.log(data);
         const modalContainer = document.createElement('div');
+        console.log(modalContainer)
         const modalBtnContainer = document.createElement('div');
         const modal = document.createElement('div');
         const x = document.createElement('btn');
@@ -138,9 +139,16 @@ function modalHtml(data, div) {
         modalInfoContainer.appendChild(address);
         modalInfoContainer.appendChild(birth);
         div.appendChild(modalContainer);
-        x.addEventListener('click', () => modalContainer.remove());
     });
 }
+
+function removeModal () {
+    const x = document.querySelector('.modal-close-btn');
+    const modalContainer = document.querySelector('.modal-container');
+    x.addEventListener('click', () => modalContainer.remove());
+}
+
+removeModal();
 
 // Search Employee via Button
 function searchButton(e) {
