@@ -2,7 +2,7 @@
 const url = 'https://randomuser.me/api/?results=12';
 const gallery = document.getElementById('gallery');
 const searchDiv = document.querySelector('.search-container');
-let current = 1;
+let current;
 
 // Create Search Bar
 searchDiv.innerHTML = 
@@ -57,6 +57,7 @@ function galleryHtml(data) {
 function modalHtml(data, div) {
     div.addEventListener('click', (e) => {
         console.log(data);
+        console.log(div);
         const modalContainer = document.createElement('div');
         modalContainer.className = 'modal-container';
         modalContainer.innerHTML = 
@@ -85,12 +86,20 @@ function modalHtml(data, div) {
         const btnLeft = document.querySelector('#modal-prev');
         // Close Modal When X is Clicked
         closeModal(x, modalContainer);
+        changeModal(btnRight, btnLeft);
     });
 }
 
+console.log(current);
 // Close Modal Via X Button
 function closeModal(x, modal) {
     x.addEventListener('click', () => modal.remove());
+}
+
+// Change Modals
+function changeModal(btnNext, btnPrev) {
+    btnNext.addEventListener('click', () => console.log('next button clicked'));
+    btnPrev.addEventListener('click', () => console.log('prev button clicked'));
 }
 
 // Search Employee via Button
