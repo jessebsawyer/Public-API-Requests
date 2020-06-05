@@ -2,7 +2,7 @@
 const url = 'https://randomuser.me/api/?results=12';
 const gallery = document.getElementById('gallery');
 const searchDiv = document.querySelector('.search-container');
-let current;
+let current = 1;
 
 // Create Search Bar
 searchDiv.innerHTML = 
@@ -50,14 +50,12 @@ function galleryHtml(data) {
     </div>`;
     gallery.appendChild(div);
     modalHtml(this.data, div);
-    
 }
 
 // Display Modal of Employee 
 function modalHtml(data, div) {
-    div.addEventListener('click', (e) => {
+    div.addEventListener('click', () => {
         console.log(data);
-        console.log(div);
         const modalContainer = document.createElement('div');
         modalContainer.className = 'modal-container';
         modalContainer.innerHTML = 
@@ -72,11 +70,11 @@ function modalHtml(data, div) {
                 <p class="modal-text">${data.phone}</p>
                 <p class="modal-text">${data.location.street.number} ${data.location.street.name}, ${data.location.city}, ${data.location.state}, ${data.location.postcode}</p>
                 <p class="modal-text">Birthday: ${data.dob.date.slice(0,10)}</p>
+                <div class="modal-btn-container">
+                    <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                    <button type="button" id="modal-next" class="modal-next btn">Next</button>
+                </div>
             </div>
-        </div>
-        <div class="modal-btn-container">
-            <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-            <button type="button" id="modal-next" class="modal-next btn">Next</button>
         </div>`;
         gallery.appendChild(modalContainer);
         // Reference variables Created
@@ -86,20 +84,25 @@ function modalHtml(data, div) {
         const btnLeft = document.querySelector('#modal-prev');
         // Close Modal When X is Clicked
         closeModal(x, modalContainer);
+        // Change Slide When Next/Prev Button Clicked
         changeModal(btnRight, btnLeft);
     });
 }
 
-console.log(current);
 // Close Modal Via X Button
 function closeModal(x, modal) {
     x.addEventListener('click', () => modal.remove());
 }
 
 // Change Modals
-function changeModal(btnNext, btnPrev) {
-    btnNext.addEventListener('click', () => console.log('next button clicked'));
-    btnPrev.addEventListener('click', () => console.log('prev button clicked'));
+function changeModal(btnNext, btnPrev, modal) {
+    btnNext.addEventListener('click', () => {
+        console.log('next button clicked');
+        
+    })
+    btnPrev.addEventListener('click', () => {
+        console.log('prev button clicked');
+    })
 }
 
 // Search Employee via Button
