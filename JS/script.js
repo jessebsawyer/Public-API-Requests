@@ -61,7 +61,7 @@ function galleryHtml(data) {
     })
 }
 
-// Display Modal of Employee 
+// Display Modal of Employee With Data From API
 function modalHtml(data) {
     const modals = data.results;
     modals.forEach(modal => {
@@ -89,7 +89,7 @@ function modalHtml(data) {
         modalContainer.style.display = 'none';
     })
 }
-
+// Show Modal When Employee Card Is Clicked
 function showModal(modal, cards, x, next, prev) {
     cards.forEach((card, index) => {
         card.addEventListener('click', () => {
@@ -110,6 +110,7 @@ function closeModal(x, modal) {
    })
 }
 
+// Change Modal Via Next/Prev Buttons
 function changeModal(modal, next, prev, x) {
     next.forEach((next, index) => {
         next.addEventListener('click', () => {
