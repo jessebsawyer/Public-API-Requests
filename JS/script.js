@@ -2,7 +2,7 @@
 const url = 'https://randomuser.me/api/?results=12';
 const gallery = document.getElementById('gallery');
 const searchDiv = document.querySelector('.search-container');
-let current = 1;
+let current;
 
 // Create Search Bar
 searchDiv.innerHTML = 
@@ -23,9 +23,17 @@ function getApi(url) {
 }
 // Call API Function
 getApi(url)
-.then(data => {
-    let people = data.results;
-    people.map(person => galleryHtml(person))
+.then (data => {
+    galleryHtml(data);
+    modalHtml(data)
+})
+.then (() => {
+    const cards = document.querySelectorAll('.card');
+    const modals = document.querySelectorAll('.modal-container');
+    const x = document.querySelectorAll('.modal-close-btn');
+    const next = document.querySelectorAll('.modal-next');
+    const prev = document.querySelectorAll('.modal-prev');
+    showModal(modals, cards, x, next, prev);
 })
 
 
@@ -37,71 +45,91 @@ searchSpace.addEventListener('keyup', searchInput);
 
 // Display Gallery With Data From API
 function galleryHtml(data) {
-    this.data = data;
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = ` <div class="card-img-container">
-    <img class="card-img" src="${data.picture.medium}" alt="profile picture">
-    </div>
-    <div class="card-info-container">
-        <h3 id="name" class="card-name cap">${data.name.first} ${data.name.last}</h3>
-        <p class="card-text">${data.email}</p>
-        <p class="card-text cap">${data.location.city}, ${data.location.state}</p>
-    </div>`;
-    gallery.appendChild(div);
-    modalHtml(this.data, div);
+    const cards = data.results;
+    cards.forEach(card => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = ` <div class="card-img-container">
+        <img class="card-img" src="${card.picture.medium}" alt="profile picture">
+        </div>
+        <div class="card-info-container">
+            <h3 id="name" class="card-name cap">${card.name.first} ${card.name.last}</h3>
+            <p class="card-text">${card.email}</p>
+            <p class="card-text cap">${card.location.city}, ${card.location.state}</p>
+        </div>`;
+        gallery.appendChild(div);
+    })
 }
 
 // Display Modal of Employee 
-function modalHtml(data, div) {
-    div.addEventListener('click', () => {
-        console.log(data);
+function modalHtml(data) {
+    const modals = data.results;
+    modals.forEach(modal => {
         const modalContainer = document.createElement('div');
         modalContainer.className = 'modal-container';
         modalContainer.innerHTML = 
-        `<div class="modal">
-            <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-            <div class="modal-info-container">
-                <img class="modal-img" src="${data.picture.large}" alt="profile picture">
-                <h3 id="name" class="modal-name cap">${data.name.first} ${data.name.last}</h3>
-                <p class="modal-text">${data.email}</p>
-                <p class="modal-text cap">${data.location.city}</p>
-                <hr>
-                <p class="modal-text">${data.phone}</p>
-                <p class="modal-text">${data.location.street.number} ${data.location.street.name}, ${data.location.city}, ${data.location.state}, ${data.location.postcode}</p>
-                <p class="modal-text">Birthday: ${data.dob.date.slice(0,10)}</p>
-                <div class="modal-btn-container">
+            `<div class="modal">
+                <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+                <div class="modal-info-container">
+                    <img class="modal-img" src="${modal.picture.large}" alt="profile picture">
+                    <h3 id="name" class="modal-name cap">${modal.name.first} ${modal.name.last}</h3>
+                    <p class="modal-text">${modal.email}</p>
+                    <p class="modal-text cap">${modal.location.city}</p>
+                    <hr>
+                    <p class="modal-text">${modal.phone}</p>
+                    <p class="modal-text">${modal.location.street.number} ${modal.location.street.name}, ${modal.location.city}, ${modal.location.state}, ${modal.location.postcode}</p>
+                    <p class="modal-text">Birthday: ${modal.dob.date.slice(0,10)}</p>
+                    <div class="modal-btn-container">
                     <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
                     <button type="button" id="modal-next" class="modal-next btn">Next</button>
                 </div>
-            </div>
-        </div>`;
+                </div>
+            </div>`;
         gallery.appendChild(modalContainer);
-        // Reference variables Created
-        const cards = document.querySelectorAll('.card');
-        const x = document.getElementById('modal-close-btn');
-        const btnRight = document.querySelector('#modal-next');
-        const btnLeft = document.querySelector('#modal-prev');
-        // Close Modal When X is Clicked
-        closeModal(x, modalContainer);
-        // Change Slide When Next/Prev Button Clicked
-        changeModal(btnRight, btnLeft);
-    });
+        modalContainer.style.display = 'none';
+    })
+}
+
+function showModal(modal, cards, x, next, prev) {
+    cards.forEach((card, index) => {
+        card.addEventListener('click', () => {
+            current = index;
+            modal[current].style.display = '';
+            closeModal(x[current], modal[current])
+            changeModal(modal, next, prev, x)
+            console.log(modal[current]);
+        })
+    })
 }
 
 // Close Modal Via X Button
 function closeModal(x, modal) {
-    x.addEventListener('click', () => modal.remove());
+   x.addEventListener('click', () => {
+       modal.style.display = 'none';
+       console.log("Modal removed");
+   })
 }
 
-// Change Modals
-function changeModal(btnNext, btnPrev, modal) {
-    btnNext.addEventListener('click', () => {
-        console.log('next button clicked');
-        
+function changeModal(modal, next, prev, x) {
+    next.forEach((next, index) => {
+        next.addEventListener('click', () => {
+            modal[current].style.display = 'none';
+            current = index;
+            if(current === 11) {current = -1}
+            current += 1;
+            modal[current].style.display = '';
+            closeModal(x[current], modal[current]);
+        })
     })
-    btnPrev.addEventListener('click', () => {
-        console.log('prev button clicked');
+    prev.forEach((prev, index) => {
+        prev.addEventListener('click', () => {
+            modal[current].style.display = 'none';
+            current = index;
+            if(current === 0) {current = 12}
+            current -= 1;
+            modal[current].style.display = '';
+            closeModal(x[current], modal[current]);
+        })
     })
 }
 
